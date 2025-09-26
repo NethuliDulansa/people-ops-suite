@@ -339,3 +339,26 @@ public isolated function addRecruit(AddRecruitPayload recruit, string createdBy)
 
     return executionResult.lastInsertId.ensureType(int);
 }
+
+# Update recruit info dynamically based on changed fields.
+#
+# + id - Recruit id
+# + recruit - Recruit payload with updated fields
+# + return - error or null
+public isolated function UpdateRecruit(int id, UpdateRecruitPayload recruit) returns error? {
+    if recruit.entries().length() === 0 {
+        return error(string `No data to update for recruit with id: ${id}`);
+    }
+
+    sql:ExecutionResult|sql:Error executionResult = databaseClient->execute(updateRecruitQuery(id, recruit));
+
+    if executionResult is sql:Error {
+        string customError = string `Error occurred while updating recruit with id ${id}`;
+        log:printError(customError, executionResult);
+        return error(customError);
+    }
+
+    if executionResult.affectedRowCount == 0 {
+        return error(string `No recruit found to update for id: ${id}`);
+    }
+}
