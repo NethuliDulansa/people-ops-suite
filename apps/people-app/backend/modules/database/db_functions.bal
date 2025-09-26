@@ -301,7 +301,7 @@ public isolated function getEmploymentType() returns json|error {
 }
 
 # Function to fetch all recruits.
-# 
+#
 # + return - Array of recruits or an error
 public isolated function fetchRecruits() returns Recruit[]|error? {
     stream<Recruit, error?> recruitsResponse = databaseClient->query(getRecruits());
@@ -311,6 +311,20 @@ public isolated function fetchRecruits() returns Recruit[]|error? {
         do {
             recruits.push(recruit);
         };
-    
+
     return recruits;
+}
+
+# Function to fetch a recruit by ID.
+#
+# + recruitId - ID of the recruit to fetch
+# + return - Recruit or an error or null if not found
+public isolated function fetchRecruitById(int recruitId) returns Recruit|error? {
+    Recruit|error result = databaseClient->queryRow(getRecruitByIdQuery(recruitId));
+
+    if result is sql:NoRowsError {
+        return ();
+    }
+
+    return result;
 }
