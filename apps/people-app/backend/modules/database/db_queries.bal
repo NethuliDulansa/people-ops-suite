@@ -670,3 +670,11 @@ isolated function updateRecruitQuery(int id, UpdateRecruitPayload recruit) retur
     return query;
 
 }
+
+# Retrieves a parameterized SQL query to delete a recruit by their ID.
+#
+# + recruitId - The ID of the recruit to delete.
+# + return - A parameterized query that deletes the recruit record with the specified ID.
+isolated function getDeleteRecruitByIdQuery(int recruitId) returns sql:ParameterizedQuery => `
+    DELETE FROM recruit WHERE id = ${recruitId};
+`;
